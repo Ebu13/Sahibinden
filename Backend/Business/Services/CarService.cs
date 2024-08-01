@@ -2,6 +2,9 @@
 using Backend.Models;
 using Backend.Business.Requests;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Backend.Business.Mapping;
 
 namespace Backend.Business.Services
@@ -57,6 +60,7 @@ namespace Backend.Business.Services
             car.MenuId = carRequest.MenuId;
             car.Year = carRequest.Year;
             car.Price = carRequest.Price;
+            car.PhotoPath = carRequest.PhotoPath; // Include PhotoPath update
 
             await _context.SaveChangesAsync();
 

@@ -7,11 +7,11 @@ namespace Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MenusController : ControllerBase
+    public class MenuController : ControllerBase
     {
         private readonly MenuService _menuService;
 
-        public MenusController(MenuService menuService)
+        public MenuController(MenuService menuService)
         {
             _menuService = menuService;
         }

@@ -17,6 +17,8 @@ public partial class Home
 
     public decimal Price { get; set; }
 
+    public string? PhotoPath { get; set; }
+
     public virtual Menu Menu { get; set; } = null!;
 
     public virtual User User { get; set; } = null!;

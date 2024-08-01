@@ -14,7 +14,8 @@ namespace Backend.Business.Mapping
                 UserId = carRequest.UserId,
                 MenuId = carRequest.MenuId,
                 Year = carRequest.Year,
-                Price = carRequest.Price
+                Price = carRequest.Price,
+                PhotoPath = carRequest.PhotoPath // Include PhotoPath
             };
         }
 
@@ -26,7 +27,8 @@ namespace Backend.Business.Mapping
                 UserId = car.UserId,
                 MenuId = car.MenuId,
                 Year = car.Year,
-                Price = car.Price
+                Price = car.Price,
+                PhotoPath = car.PhotoPath // Include PhotoPath
             };
         }
 
@@ -40,7 +42,8 @@ namespace Backend.Business.Mapping
                 MenuId = homeRequest.MenuId,
                 Location = homeRequest.Location,
                 Size = homeRequest.Size,
-                Price = homeRequest.Price
+                Price = homeRequest.Price,
+                PhotoPath = homeRequest.PhotoPath // Include PhotoPath
             };
         }
 
@@ -53,7 +56,8 @@ namespace Backend.Business.Mapping
                 MenuId = home.MenuId,
                 Location = home.Location,
                 Size = home.Size,
-                Price = home.Price
+                Price = home.Price,
+                PhotoPath = home.PhotoPath // Include PhotoPath
             };
         }
 

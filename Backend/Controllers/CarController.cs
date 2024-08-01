@@ -1,17 +1,20 @@
 ﻿using Backend.Business.Services;
 using Backend.Business.Requests;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Backend.Business.Mapping;
 
 namespace Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CarsController : ControllerBase
+    public class CarController : ControllerBase
     {
         private readonly CarService _carService;
 
-        public CarsController(CarService carService)
+        public CarController(CarService carService)
         {
             _carService = carService;
         }
@@ -45,15 +48,30 @@ namespace Backend.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<CarRequestDto>> PostCar(CarRequestDto carRequest)
+        public async Task<ActionResult<CarRequestDto>> PostCar([FromBody] CarRequestDto carRequest)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var car = await _carService.AddAsync(carRequest);
             return CreatedAtAction(nameof(GetCar), new { id = car.CarId }, car);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCar(int id, CarRequestDto carRequest)
+        public async Task<IActionResult> PutCar(int id, [FromBody] CarRequestDto carRequest)
         {
+            if (id != carRequest.CarId)
+            {
+                return BadRequest("Car ID mismatch");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var updatedCar = await _carService.UpdateAsync(id, carRequest);
 
             if (updatedCar == null)

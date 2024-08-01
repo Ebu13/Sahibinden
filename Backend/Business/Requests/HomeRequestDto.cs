@@ -16,5 +16,7 @@ namespace Backend.Business.Requests
 
         public decimal Price { get; set; }
 
+        public string? PhotoPath { get; set; }
+
     }
 }

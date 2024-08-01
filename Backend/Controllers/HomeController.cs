@@ -8,11 +8,11 @@ namespace Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class HomesController : ControllerBase
+    public class HomeController : ControllerBase
     {
         private readonly HomeService _homeService;
 
-        public HomesController(HomeService homeService)
+        public HomeController(HomeService homeService)
         {
             _homeService = homeService;
         }
@@ -26,14 +26,14 @@ namespace Backend.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Home>>> GetHomes()
+        public async Task<ActionResult<IEnumerable<HomeRequestDto>>> GetHomes()
         {
             var homes = await _homeService.GetAllAsync();
             return Ok(homes);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Home>> GetHome(int id)
+        public async Task<ActionResult<HomeRequestDto>> GetHome(int id)
         {
             var home = await _homeService.GetByIdAsync(id);
 
@@ -46,15 +46,30 @@ namespace Backend.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Home>> PostHome(HomeRequestDto homeRequest)
+        public async Task<ActionResult<HomeRequestDto>> PostHome([FromBody] HomeRequestDto homeRequest)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var home = await _homeService.AddAsync(homeRequest);
             return CreatedAtAction(nameof(GetHome), new { id = home.HomeId }, home);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutHome(int id, HomeRequestDto homeRequest)
+        public async Task<IActionResult> PutHome(int id, [FromBody] HomeRequestDto homeRequest)
         {
+            if (id != homeRequest.HomeId)
+            {
+                return BadRequest("Home ID mismatch");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var updatedHome = await _homeService.UpdateAsync(id, homeRequest);
 
             if (updatedHome == null)
