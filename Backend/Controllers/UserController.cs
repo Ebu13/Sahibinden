@@ -68,6 +68,7 @@ namespace Backend.Controllers
 
             return NoContent();
         }
+
         [HttpGet("username/{username}")]
         public async Task<ActionResult<int>> GetUserIdByUsername(string username)
         {
@@ -80,8 +81,6 @@ namespace Backend.Controllers
 
             return Ok(userId);
         }
-
-
 
     }
 }
