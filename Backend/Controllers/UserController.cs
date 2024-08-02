@@ -82,5 +82,19 @@ namespace Backend.Controllers
             return Ok(userId);
         }
 
+        [HttpPost("login")]
+        public async Task<ActionResult<User>> Login([FromBody] LoginRequestDto loginRequest)
+        {
+            var user = await _userService.ValidateUserAsync(loginRequest.Username, loginRequest.Password);
+
+            if (user == null)
+            {
+                return Unauthorized(); // 401 Unauthorized
+            }
+
+            return Ok(user);
+        }
+
+
     }
 }

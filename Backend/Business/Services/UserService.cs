@@ -75,6 +75,11 @@ namespace Backend.Business.Services
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
             return user?.UserId; // Kullanıcı bulunursa userId'yi, bulunamazsa null döner.
         }
+        public async Task<UserRequestDto?> ValidateUserAsync(string username, string password)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username && u.Password == password);
+            return user?.ToDto(); // Kullanıcı bulunursa döndür, bulunamazsa null döner.
+        }
 
     }
 }

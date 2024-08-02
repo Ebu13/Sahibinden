@@ -135,41 +135,30 @@ const App = () => {
   };
 
   const handleOrder = (item) => {
-    const username = prompt("Kullanıcı adını girin:");
-    if (username) {
-        axios.get(`https://localhost:7297/api/User/username/${username}`)
-            .then(response => {
-                const tokenuserId = response.data; // API'den kullanıcı ID'sini al
-
-                // productType'ı initialMenu'ya göre ayarlayın
-                let productType;
-                if (initialMenu === "Araba") {
-                    productType = "Car";
-                } else if (initialMenu === "Ev") {
-                    productType = "Home";
-                } else {
-                    throw new Error("Geçersiz ürün tipi");
-                }
-
-                const product = {
-                    userId: tokenuserId,
-                    productType: productType, // Düzgün productType kullan
-                    menuId: item.menuId // item'dan menuId al
-                };
-
-                // Siparişi API'ye gönder
-                return axios.post('https://localhost:7297/api/Orders', product);
-            })
-            .then(() => {
-                // Sipariş oluşturma sayfasına yönlendir
-                navigate(`/order`);
-            })
-            .catch(error => {
-                console.error('Sipariş oluşturulurken hata oluştu:', error);
-                alert("Hata: Sipariş oluşturulamadı!");
-            });
+    const userId = localStorage.getItem('userId'); // Kullanıcı ID'sini al
+    if (!userId) {
+        alert('Lütfen önce giriş yapın!'); // Giriş yapmamışsa uyar
+        return;
     }
+
+    const productType = initialMenu === "Araba" ? "Car" : "Home";
+    const product = {
+        userId: userId,
+        productType: productType,
+        menuId: item.menuId,
+    };
+
+    // Siparişi API'ye gönder
+    axios.post('https://localhost:7297/api/Orders', product)
+        .then(() => {
+            navigate(`/order`);
+        })
+        .catch(error => {
+            console.error('Sipariş oluşturulurken hata oluştu:', error);
+            alert("Hata: Sipariş oluşturulamadı!");
+        });
 };
+
 
   return (
     <Container>

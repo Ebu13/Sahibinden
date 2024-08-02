@@ -4,13 +4,16 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'; // Sw
 import App from './App';
 import OrderPage from './OrderPage';
 import './index.css'; // Stil dosyası (isteğe bağlı)
+import Login from './Login';
 
 ReactDOM.render(
   <Router>
     <Routes>
-      <Route path="/" element={<App />} /> {/* App bileşeni element olarak geçildi */}
-      <Route path="/order" element={<OrderPage />} /> {/* OrderPage bileşeni element olarak geçildi */}
-    </Routes>
+    <Route path="/home" element={<App />} />
+    <Route path="/order" element={<OrderPage />} />
+    <Route path="/login" element={<Login />} /> {/* Login bileşeni ekleniyor */}
+    <Route path="/" element={<Login />} />
+</Routes>
   </Router>,
   document.getElementById('root')
 );
