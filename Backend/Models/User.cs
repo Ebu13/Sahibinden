@@ -16,4 +16,6 @@ public partial class User
     public virtual ICollection<Car> Cars { get; set; } = new List<Car>();
 
     public virtual ICollection<Home> Homes { get; set; } = new List<Home>();
+
+    public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 }

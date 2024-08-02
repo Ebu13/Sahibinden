@@ -17,5 +17,7 @@ public partial class Menu
 
     public virtual ICollection<Menu> InverseParent { get; set; } = new List<Menu>();
 
+    public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
+
     public virtual Menu? Parent { get; set; }
 }

@@ -15,6 +15,7 @@ builder.Services.AddScoped<CarService>();
 builder.Services.AddScoped<HomeService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<MenuService>();
+builder.Services.AddScoped<OrderService>();
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {

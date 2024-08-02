@@ -69,5 +69,11 @@ namespace Backend.Business.Services
 
             return true;
         }
+        public async Task<int?> GetUserIdByUsernameAsync(string username)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+            return user?.UserId; // Kullanıcı bulunursa userId'yi, bulunamazsa null döner.
+        }
+
     }
 }

@@ -104,5 +104,28 @@ namespace Backend.Business.Mapping
                 Password = user.Password
             };
         }
+
+        // Order Mapping
+        public static Order ToEntity(this OrderRequestDTO orderRequest)
+        {
+            return new Order
+            {
+                OrderId = orderRequest.OrderId,
+                UserId = orderRequest.UserId,
+                ProductType = orderRequest.ProductType,
+                MenuId = orderRequest.MenuId
+            };
+        }
+
+        public static OrderRequestDTO ToDto(this Order order)
+        {
+            return new OrderRequestDTO
+            {
+                OrderId = order.OrderId,
+                UserId = order.UserId,
+                ProductType = order.ProductType,
+                MenuId = order.MenuId
+            };
+        }
     }
 }

@@ -68,5 +68,20 @@ namespace Backend.Controllers
 
             return NoContent();
         }
+        [HttpGet("username/{username}")]
+        public async Task<ActionResult<int>> GetUserIdByUsername(string username)
+        {
+            var userId = await _userService.GetUserIdByUsernameAsync(username);
+
+            if (userId == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(userId);
+        }
+
+
+
     }
 }
