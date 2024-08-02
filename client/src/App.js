@@ -171,9 +171,6 @@ const App = () => {
     }
 };
 
-  
-  
-
   return (
     <Container>
       <AppBar position="static">
@@ -200,6 +197,13 @@ const App = () => {
             variant="contained"
             color="primary"
             onClick={() => handleButtonClick(menu)}
+            startIcon={
+              <img
+                src={`icons/${menu.amblem}`}
+                alt={menu.name}
+                style={{ width: 30, height: 30 }}
+              />
+            }
           >
             {menu.name}
           </Button>

@@ -11,6 +11,8 @@ public partial class Menu
 
     public int? ParentId { get; set; }
 
+    public string? Amblem { get; set; }
+
     public virtual ICollection<Car> Cars { get; set; } = new List<Car>();
 
     public virtual ICollection<Home> Homes { get; set; } = new List<Home>();

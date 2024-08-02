@@ -10,5 +10,7 @@ namespace Backend.Business.Requests
 
         public int? ParentId { get; set; }
 
+        public string? Amblem { get; set; }
+
     }
 }
