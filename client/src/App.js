@@ -199,7 +199,7 @@ const App = () => {
             onClick={() => handleButtonClick(menu)}
             startIcon={
               <img
-                src={`icons/${menu.amblem}`}
+                src={`amblem/${menu.amblem}`}
                 alt={menu.name}
                 style={{ width: 30, height: 30 }}
               />
