@@ -15,6 +15,7 @@
 # Mono Auto Generated Files
 mono_crash.*
 
+Migrations/
 # Windows image file caches
 Thumbs.db
 Thumbs.db:encryptable
