@@ -1,4 +1,4 @@
-using Backend.Business.Services;
+ï»¿using Backend.Business.Services;
 using Backend.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Veritabanı bağlantısını yapılandır
+// VeritabanÄ± baÄŸlantÄ±sÄ±nÄ± yapÄ±landÄ±r
 builder.Services.AddDbContext<SahibindenContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -19,13 +19,13 @@ builder.Services.AddScoped<OrderService>();
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
-        // JSON serileştirme seçeneklerini ayarlama
+        // JSON serileÅŸtirme seÃ§eneklerini ayarlama
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
-        options.JsonSerializerOptions.WriteIndented = true; // JSON'un okunabilir olmasını sağlamak için
-        options.JsonSerializerOptions.MaxDepth = 64; // İhtiyaç duyduğunuz derinliğe göre ayarlayın
+        options.JsonSerializerOptions.WriteIndented = true; // JSON'un okunabilir olmasÄ±nÄ± saÄŸlamak iÃ§in
+        options.JsonSerializerOptions.MaxDepth = 64; // Ä°htiyaÃ§ duyduÄŸunuz derinliÄŸe gÃ¶re ayarlayÄ±n
     });
 
-// CORS politikalarını tanımla
+// CORS politikalarÄ±nÄ± tanÄ±mla
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(builder =>
@@ -36,13 +36,13 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Swagger/OpenAPI'yi yapılandır
+// Swagger/OpenAPI'yi yapÄ±landÄ±r
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// HTTP istek boru hattını yapılandır
+// HTTP istek boru hattÄ±nÄ± yapÄ±landÄ±r
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -56,7 +56,7 @@ app.UseCors();
 
 app.UseAuthorization();
 
-// Controller'ları ekle
+// Controller'larÄ± ekle
 app.MapControllers();
 
 app.Run();
