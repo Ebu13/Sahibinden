@@ -8,14 +8,15 @@
 # User-specific files
 *.rsuser
 *.suo
-*.user
 *.userosscache
 *.sln.docstates
 
 # Mono Auto Generated Files
 mono_crash.*
 
+Migrations/*
 Migrations/
+
 # Windows image file caches
 Thumbs.db
 Thumbs.db:encryptable
