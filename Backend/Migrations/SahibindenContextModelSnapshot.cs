@@ -35,6 +35,11 @@ namespace Backend.Migrations
                         .HasColumnType("int")
                         .HasColumnName("menu_id");
 
+                    b.Property<string>("PhotoPath")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasColumnName("photoPath");
+
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(10, 2)")
                         .HasColumnName("price");
@@ -50,9 +55,9 @@ namespace Backend.Migrations
                     b.HasKey("CarId")
                         .HasName("PK__Cars__4C9A0DB3759964D0");
 
-                    b.HasIndex("MenuId");
+                    b.HasIndex(new[] { "MenuId" }, "IX_Cars_menu_id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex(new[] { "UserId" }, "IX_Cars_user_id");
 
                     b.ToTable("Cars");
                 });
@@ -76,6 +81,11 @@ namespace Backend.Migrations
                         .HasColumnType("int")
                         .HasColumnName("menu_id");
 
+                    b.Property<string>("PhotoPath")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasColumnName("photoPath");
+
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(10, 2)")
                         .HasColumnName("price");
@@ -91,9 +101,9 @@ namespace Backend.Migrations
                     b.HasKey("HomeId")
                         .HasName("PK__Homes__8ED7E2137B8363FF");
 
-                    b.HasIndex("MenuId");
+                    b.HasIndex(new[] { "MenuId" }, "IX_Homes_menu_id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex(new[] { "UserId" }, "IX_Homes_user_id");
 
                     b.ToTable("Homes");
                 });
@@ -106,6 +116,11 @@ namespace Backend.Migrations
                         .HasColumnName("menu_id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MenuId"));
+
+                    b.Property<string>("Amblem")
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)")
+                        .HasColumnName("amblem");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -120,9 +135,42 @@ namespace Backend.Migrations
                     b.HasKey("MenuId")
                         .HasName("PK__Menu__4CA0FADC3E077BAA");
 
-                    b.HasIndex("ParentId");
+                    b.HasIndex(new[] { "ParentId" }, "IX_Menu_parent_id");
 
                     b.ToTable("Menu", (string)null);
+                });
+
+            modelBuilder.Entity("Backend.Models.Order", b =>
+                {
+                    b.Property<int>("OrderId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("order_id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("OrderId"));
+
+                    b.Property<int>("MenuId")
+                        .HasColumnType("int")
+                        .HasColumnName("menu_id");
+
+                    b.Property<string>("ProductType")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasColumnName("product_type");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("OrderId")
+                        .HasName("PK__Orders__4659622964ACD4C3");
+
+                    b.HasIndex("MenuId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("Backend.Models.User", b =>
@@ -208,6 +256,26 @@ namespace Backend.Migrations
                     b.Navigation("Parent");
                 });
 
+            modelBuilder.Entity("Backend.Models.Order", b =>
+                {
+                    b.HasOne("Backend.Models.Menu", "Menu")
+                        .WithMany("Orders")
+                        .HasForeignKey("MenuId")
+                        .IsRequired()
+                        .HasConstraintName("FK__Orders__menu_id__70DDC3D8");
+
+                    b.HasOne("Backend.Models.User", "User")
+                        .WithMany("Orders")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK__Orders__user_id__6FE99F9F");
+
+                    b.Navigation("Menu");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Backend.Models.Menu", b =>
                 {
                     b.Navigation("Cars");
@@ -215,6 +283,8 @@ namespace Backend.Migrations
                     b.Navigation("Homes");
 
                     b.Navigation("InverseParent");
+
+                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("Backend.Models.User", b =>
@@ -222,6 +292,8 @@ namespace Backend.Migrations
                     b.Navigation("Cars");
 
                     b.Navigation("Homes");
+
+                    b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618
         }

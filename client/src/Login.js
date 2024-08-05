@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Container, TextField, Button, Typography } from '@mui/material';
+import { Container, TextField, Button, Typography, Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
@@ -21,29 +21,49 @@ const Login = () => {
     };
 
     return (
-        <Container>
-            <Typography variant="h4" gutterBottom>Giriş Yap</Typography>
-            {error && <Typography color="error">{error}</Typography>}
-            <TextField
-                label="Kullanıcı Adı"
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-            />
-            <TextField
-                label="Şifre"
-                type="password"
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-            />
-            <Button variant="contained" color="primary" onClick={handleLogin}>
-                Giriş Yap
-            </Button>
+        <Container maxWidth="xs">
+            <Box
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    marginTop: 8,
+                    padding: 3,
+                    boxShadow: 3,
+                    borderRadius: 2,
+                    bgcolor: 'background.paper',
+                }}
+            >
+                <Typography variant="h4" gutterBottom>
+                    Giriş Yap
+                </Typography>
+                {error && <Typography color="error">{error}</Typography>}
+                <TextField
+                    label="Kullanıcı Adı"
+                    variant="outlined"
+                    fullWidth
+                    margin="normal"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                />
+                <TextField
+                    label="Şifre"
+                    type="password"
+                    variant="outlined"
+                    fullWidth
+                    margin="normal"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                />
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleLogin}
+                    sx={{ mt: 2 }}
+                >
+                    Giriş Yap
+                </Button>
+            </Box>
         </Container>
     );
 };

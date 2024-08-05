@@ -17,7 +17,8 @@ namespace Backend.Migrations
                     menu_id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    parent_id = table.Column<int>(type: "int", nullable: true)
+                    parent_id = table.Column<int>(type: "int", nullable: true),
+                    amblem = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -53,7 +54,8 @@ namespace Backend.Migrations
                     user_id = table.Column<int>(type: "int", nullable: false),
                     menu_id = table.Column<int>(type: "int", nullable: false),
                     year = table.Column<int>(type: "int", nullable: false),
-                    price = table.Column<decimal>(type: "decimal(10,2)", nullable: false)
+                    price = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    photoPath = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -81,7 +83,8 @@ namespace Backend.Migrations
                     menu_id = table.Column<int>(type: "int", nullable: false),
                     location = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     size = table.Column<int>(type: "int", nullable: false),
-                    price = table.Column<decimal>(type: "decimal(10,2)", nullable: false)
+                    price = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    photoPath = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -93,6 +96,32 @@ namespace Backend.Migrations
                         principalColumn: "menu_id");
                     table.ForeignKey(
                         name: "FK__Homes__user_id__403A8C7D",
+                        column: x => x.user_id,
+                        principalTable: "Users",
+                        principalColumn: "user_id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Orders",
+                columns: table => new
+                {
+                    order_id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    user_id = table.Column<int>(type: "int", nullable: false),
+                    product_type = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    menu_id = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK__Orders__4659622964ACD4C3", x => x.order_id);
+                    table.ForeignKey(
+                        name: "FK__Orders__menu_id__70DDC3D8",
+                        column: x => x.menu_id,
+                        principalTable: "Menu",
+                        principalColumn: "menu_id");
+                    table.ForeignKey(
+                        name: "FK__Orders__user_id__6FE99F9F",
                         column: x => x.user_id,
                         principalTable: "Users",
                         principalColumn: "user_id",
@@ -123,6 +152,16 @@ namespace Backend.Migrations
                 name: "IX_Menu_parent_id",
                 table: "Menu",
                 column: "parent_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_menu_id",
+                table: "Orders",
+                column: "menu_id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_user_id",
+                table: "Orders",
+                column: "user_id");
         }
 
         /// <inheritdoc />
@@ -133,6 +172,9 @@ namespace Backend.Migrations
 
             migrationBuilder.DropTable(
                 name: "Homes");
+
+            migrationBuilder.DropTable(
+                name: "Orders");
 
             migrationBuilder.DropTable(
                 name: "Menu");

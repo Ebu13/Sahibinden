@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Container, Typography, List, ListItem, ListItemText, CircularProgress, Paper } from '@mui/material';
+import { Container, Typography, List, ListItem, ListItemText, CircularProgress, Paper, Box } from '@mui/material';
 
 const OrderPage = () => {
   const [orders, setOrders] = useState([]);
@@ -43,15 +43,19 @@ const OrderPage = () => {
     }
   };
 
-  if (loading) return <CircularProgress />;
+  if (loading) return (
+    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+      <CircularProgress />
+    </Box>
+  );
   if (error) return <Typography color="error">Bir hata oluştu: {error.message}</Typography>;
 
   return (
-    <Container>
+    <Container maxWidth="md" sx={{ mt: 4 }}>
       <Typography variant="h4" gutterBottom>
         Siparişler
       </Typography>
-      <Paper elevation={3} style={{ padding: '16px' }}>
+      <Paper elevation={3} sx={{ padding: 3 }}>
         <List>
           {orders.map(order => (
             <OrderItem key={order.orderId} order={order} fetchUserDetails={fetchUserDetails} fetchMenuDetails={fetchMenuDetails} />
