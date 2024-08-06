@@ -18,14 +18,14 @@ namespace Backend.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public ActionResult<List<OrderRequestDTO>> GetAllOrders()
         {
             return _orderService.GetAllOrders();
         }
 
         [HttpGet("user/{userId}")]
-        [Authorize]
+        [Authorize(Roles = "Buyer")]
         public ActionResult<List<OrderRequestDTO>> GetOrdersByUserId(int userId)
         {
             var orders = _orderService.GetOrdersByUserId(userId);
@@ -50,7 +50,7 @@ namespace Backend.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Buyer")]
         public ActionResult<OrderRequestDTO> AddOrder(OrderRequestDTO orderRequest)
         {
             try
@@ -67,7 +67,7 @@ namespace Backend.Controllers
 
 
         [HttpPut("{id}")]
-        [Authorize]
+        [Authorize(Roles = "Buyer")]
         public IActionResult UpdateOrder(int id, OrderRequestDTO orderRequest)
         {
             if (id != orderRequest.OrderId)
@@ -80,7 +80,7 @@ namespace Backend.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize]
+        [Authorize(Roles = "Buyer")]
         public IActionResult DeleteOrder(int id)
         {
             _orderService.DeleteOrder(id);

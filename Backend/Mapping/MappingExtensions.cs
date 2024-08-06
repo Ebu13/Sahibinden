@@ -1,5 +1,6 @@
 ﻿using Backend.Business.Requests;
 using Backend.Models;
+using System.Data;
 
 namespace Backend.Business.Mapping
 {
@@ -123,7 +124,8 @@ namespace Backend.Business.Mapping
                 UserId = userRequest.UserId,
                 Username = userRequest.Username,
                 Email = userRequest.Email,
-                Password = userRequest.Password
+                Password = userRequest.Password,
+                Role = userRequest.Role
             };
         }
 
@@ -139,7 +141,8 @@ namespace Backend.Business.Mapping
                 UserId = user.UserId,
                 Username = user.Username,
                 Email = user.Email,
-                Password = user.Password
+                Password = user.Password,
+                Role= user.Role
             };
         }
 

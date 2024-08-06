@@ -50,7 +50,7 @@ namespace Backend.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Supplier")]
         public async Task<ActionResult<HomeRequestDto>> PostHome([FromBody] HomeRequestDto homeRequest)
         {
             if (!ModelState.IsValid)
@@ -63,7 +63,7 @@ namespace Backend.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize]
+        [Authorize(Roles = "Supplier")]
         public async Task<IActionResult> PutHome(int id, [FromBody] HomeRequestDto homeRequest)
         {
             if (id != homeRequest.HomeId)
@@ -87,7 +87,7 @@ namespace Backend.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize]
+        [Authorize(Roles = "Supplier")]
         public async Task<IActionResult> DeleteHome(int id)
         {
             var deleted = await _homeService.DeleteAsync(id);

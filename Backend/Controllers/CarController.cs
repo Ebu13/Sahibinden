@@ -52,7 +52,7 @@ namespace Backend.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Supplier")]
         public async Task<ActionResult<CarRequestDto>> PostCar([FromBody] CarRequestDto carRequest)
         {
             if (!ModelState.IsValid)
@@ -65,7 +65,7 @@ namespace Backend.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize]
+        [Authorize(Roles = "Supplier")]
         public async Task<IActionResult> PutCar(int id, [FromBody] CarRequestDto carRequest)
         {
             if (id != carRequest.CarId)
@@ -89,7 +89,7 @@ namespace Backend.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize]
+        [Authorize(Roles = "Supplier")]
         public async Task<IActionResult> DeleteCar(int id)
         {
             var deleted = await _carService.DeleteAsync(id);

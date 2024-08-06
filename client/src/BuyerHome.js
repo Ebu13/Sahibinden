@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-const App = () => {
+const BuyerHome = () => {
   const [menus, setMenus] = useState([]);
   const [parentId, setParentId] = useState(0);
   const [selectedMenuNames, setSelectedMenuNames] = useState([]);
@@ -261,4 +261,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default BuyerHome;

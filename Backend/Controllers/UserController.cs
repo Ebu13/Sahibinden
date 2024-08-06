@@ -2,13 +2,8 @@
 using Backend.Business.Requests;
 using Backend.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using Backend.Business.Mapping;
-using System.Text;
 using Microsoft.AspNetCore.Authorization;
-using Backend.Business.Services.Backend.Business.Services;
 
 namespace Backend.Controllers
 {
@@ -27,7 +22,7 @@ namespace Backend.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
             var users = await _userService.GetAllAsync();
@@ -49,7 +44,7 @@ namespace Backend.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<User>> PostUser(UserRequestDto userRequest)
         {
             var user = await _userService.AddAsync(userRequest);
@@ -57,7 +52,7 @@ namespace Backend.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> PutUser(int id, UserRequestDto userRequest)
         {
             var updatedUser = await _userService.UpdateAsync(id, userRequest);
@@ -71,7 +66,7 @@ namespace Backend.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteUser(int id)
         {
             var deleted = await _userService.DeleteAsync(id);
@@ -119,8 +114,8 @@ namespace Backend.Controllers
                 Token = tokenString,
                 UserId = user.UserId,
                 Username = user.Username,
-                Email = user.Email
-                //Password: user.Password // Şifreyi döndürmekten kaçının
+                Email = user.Email,
+                Role= user.Role // Şifreyi döndürmekten kaçının
             });
         }
 

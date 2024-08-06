@@ -48,7 +48,7 @@ namespace Backend.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Admin,Supplier")]
         public async Task<ActionResult<Menu>> PostMenu(MenuRequestDto menuRequest)
         {
             var menu = await _menuService.AddAsync(menuRequest);
@@ -56,7 +56,7 @@ namespace Backend.Controllers
         }
 
         [HttpPut("{id}")]
-        [Authorize]
+        [Authorize(Roles = "Admin,Supplier")]
         public async Task<IActionResult> PutMenu(int id, MenuRequestDto menuRequest)
         {
             var updatedMenu = await _menuService.UpdateAsync(id, menuRequest);
@@ -70,7 +70,7 @@ namespace Backend.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize]
+        [Authorize(Roles = "Admin,Supplier")]
         public async Task<IActionResult> DeleteMenu(int id)
         {
             var deleted = await _menuService.DeleteAsync(id);

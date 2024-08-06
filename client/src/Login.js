@@ -18,9 +18,18 @@ const Login = () => {
             localStorage.setItem('userId', response.data.userId);
             localStorage.setItem('username', response.data.username);
             localStorage.setItem('email', response.data.email);
+            localStorage.setItem('role', response.data.role);
 
-            // Redirect to the home page or any other page
-            navigate('/home');
+            // Redirect based on user role
+            if (response.data.role === 'Admin') {
+                navigate('/admin');
+            } else if (response.data.role === 'Supplier') {
+                navigate('/supplier');
+            } else if (response.data.role === 'Buyer') {
+                navigate('/buyer');
+            } else {
+                navigate('/home');
+            }
         } catch (err) {
             setError('Giriş başarısız. Lütfen tekrar deneyin.');
         }

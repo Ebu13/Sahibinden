@@ -13,6 +13,8 @@ public partial class User
 
     public string Email { get; set; } = null!;
 
+    public string Role { get; set; } = null!;
+
     public virtual ICollection<Car> Cars { get; set; } = new List<Car>();
 
     public virtual ICollection<Home> Homes { get; set; } = new List<Home>();
