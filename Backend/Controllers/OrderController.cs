@@ -24,6 +24,19 @@ namespace Backend.Controllers
             return _orderService.GetAllOrders();
         }
 
+        [HttpGet("user/{userId}")]
+        [Authorize]
+        public ActionResult<List<OrderRequestDTO>> GetOrdersByUserId(int userId)
+        {
+            var orders = _orderService.GetOrdersByUserId(userId);
+            if (orders == null || !orders.Any())
+            {
+                return NotFound();
+            }
+            return orders;
+        }
+
+
         [HttpGet("{id}")]
         [Authorize]
         public ActionResult<OrderRequestDTO> GetOrderById(int id)

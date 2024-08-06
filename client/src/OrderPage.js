@@ -16,13 +16,19 @@ const OrderPage = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [userDetails, setUserDetails] = useState(null);
 
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await axios.get('https://localhost:7297/api/Orders', getAuthHeaders());
+        const userId = localStorage.getItem('userId');
+        const response = await axios.get(`https://localhost:7297/api/Orders/user/${userId}`, getAuthHeaders());
         const fetchedOrders = response.data.$values;
         setOrders(fetchedOrders); // Set orders to state
+
+        // Fetch user details
+        const user = await fetchUserDetails(userId);
+        setUserDetails(user); // Set user details to state
       } catch (err) {
         setError(err); // Set error to state
       } finally {
@@ -65,10 +71,15 @@ const OrderPage = () => {
       <Typography variant="h4" gutterBottom>
         Siparişler
       </Typography>
+      {userDetails && (
+        <Typography variant="h6">
+          Kullanıcı: {userDetails.username}, Email: {userDetails.email}
+        </Typography>
+      )}
       <Paper elevation={3} sx={{ padding: 3 }}>
         <List>
           {orders.map(order => (
-            <OrderItem key={order.orderId} order={order} fetchUserDetails={fetchUserDetails} fetchMenuDetails={fetchMenuDetails} />
+            <OrderItem key={order.orderId} order={order} fetchMenuDetails={fetchMenuDetails} />
           ))}
         </List>
       </Paper>
@@ -76,38 +87,32 @@ const OrderPage = () => {
   );
 };
 
-const OrderItem = ({ order, fetchUserDetails, fetchMenuDetails }) => {
-  const [userDetails, setUserDetails] = useState(null);
+const OrderItem = ({ order, fetchMenuDetails }) => {
   const [menuDetails, setMenuDetails] = useState(null);
-  const [loadingUser, setLoadingUser] = useState(true);
   const [loadingMenu, setLoadingMenu] = useState(true);
 
   useEffect(() => {
-    const getUserDetails = async () => {
-      const user = await fetchUserDetails(order.userId);
-      setUserDetails(user);
-      setLoadingUser(false);
-    };
-
     const getMenuDetails = async () => {
       const menu = await fetchMenuDetails(order.menuId);
       setMenuDetails(menu);
       setLoadingMenu(false);
     };
 
-    getUserDetails();
     getMenuDetails();
-  }, [order.userId, order.menuId, fetchUserDetails, fetchMenuDetails]);
+  }, [order.menuId, fetchMenuDetails]);
 
-  if (loadingUser || loadingMenu) return <ListItem><CircularProgress size={24} /></ListItem>;
-  if (!userDetails) return <ListItem><Typography color="error">Kullanıcı bulunamadı.</Typography></ListItem>;
+  if (loadingMenu) return <ListItem><CircularProgress size={24} /></ListItem>;
   if (!menuDetails) return <ListItem><Typography color="error">Menü bulunamadı.</Typography></ListItem>;
 
   return (
     <ListItem>
       <ListItemText
-        primary={`Kullanıcı: ${userDetails.username}, Email: ${userDetails.email}`}
-        secondary={`Ürün Türü: ${order.productType}, Menü: ${menuDetails.name}`}
+        primary={`Ürün Türü: ${order.productType}`}
+        secondary={
+          <ul>
+            <li>{`Menü: ${menuDetails.name}`}</li>
+          </ul>
+        }
       />
     </ListItem>
   );

@@ -26,6 +26,17 @@ namespace Backend.Business.Services
                 .ToList();
         }
 
+        public List<OrderRequestDTO> GetOrdersByUserId(int userId)
+        {
+            return _context.Orders
+                .Include(o => o.User)
+                .Include(o => o.Menu)
+                .Where(o => o.UserId == userId)
+                .Select(o => o.ToDto())
+                .ToList();
+        }
+
+
         public OrderRequestDTO? GetOrderById(int orderId)
         {
             var order = _context.Orders
