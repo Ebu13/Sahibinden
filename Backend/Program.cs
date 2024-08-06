@@ -6,6 +6,7 @@ using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using Backend.Data;
 using Backend.Business.Services;
+using Backend.Business.Services.Backend.Business.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,6 +44,8 @@ builder.Services.AddDbContext<SahibindenContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Servisleri ekle
+
+builder.Services.AddScoped<JwtService>();
 builder.Services.AddScoped<CarService>();
 builder.Services.AddScoped<HomeService>();
 builder.Services.AddScoped<UserService>();

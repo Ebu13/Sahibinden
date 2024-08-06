@@ -5,8 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using Backend.Business.Mapping;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
+using Backend.Business.Services.Backend.Business.Services;
 
 namespace Backend.Controllers
 {
@@ -107,48 +109,20 @@ namespace Backend.Controllers
                 return Unauthorized();
             }
 
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"] ?? throw new ArgumentNullException("Jwt:Key"));
+            // JWT token oluşturma
+            var jwtTokenService = new JwtService(_configuration);
+            var tokenString = jwtTokenService.GenerateToken(user.ToEntity());
 
-            // Null check for Jwt:ExpiresInMinutes
-            var expiresInMinutesString = _configuration["Jwt:ExpiresInMinutes"];
-            if (string.IsNullOrEmpty(expiresInMinutesString))
-            {
-                throw new ArgumentNullException("Jwt:ExpiresInMinutes", "Configuration value cannot be null or empty.");
-            }
-
-            if (!double.TryParse(expiresInMinutesString, out double expiresInMinutes))
-            {
-                throw new ArgumentException("Jwt:ExpiresInMinutes configuration value is not a valid number.");
-            }
-
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-            new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
-            new Claim(ClaimTypes.Name, user.Username)
-                }),
-                Expires = DateTime.UtcNow.AddMinutes(expiresInMinutes),
-                Issuer = _configuration["Jwt:Issuer"],
-                Audience = _configuration["Jwt:Audience"],
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            var tokenString = tokenHandler.WriteToken(token);
-
-            // Return the JWT token along with user details
+            // JWT token ve kullanıcı detaylarını döndürme
             return Ok(new
             {
                 Token = tokenString,
                 UserId = user.UserId,
                 Username = user.Username,
-                Email = user.Email,
-                Password = user.Password // It's not recommended to return the password in responses
+                Email = user.Email
+                //Password: user.Password // Şifreyi döndürmekten kaçının
             });
         }
-
 
 
     }
