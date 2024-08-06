@@ -41,7 +41,7 @@ const Login = () => {
                 }}
             >
                 <Typography variant="h4" gutterBottom>
-                    Giriş Yap
+                    Giriş
                 </Typography>
                 {error && <Typography color="error">{error}</Typography>}
                 <TextField

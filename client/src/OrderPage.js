@@ -104,10 +104,13 @@ const OrderItem = ({ order, fetchMenuDetails }) => {
   if (loadingMenu) return <ListItem><CircularProgress size={24} /></ListItem>;
   if (!menuDetails) return <ListItem><Typography color="error">Menü bulunamadı.</Typography></ListItem>;
 
+  // Determine product type display text
+  const productTypeDisplay = order.productType === 'Car' ? 'Araba' : order.productType === 'Home' ? 'Ev' : order.productType;
+
   return (
     <ListItem>
       <ListItemText
-        primary={`Ürün Türü: ${order.productType}`}
+        primary={`Ürün Türü: ${productTypeDisplay}`}
         secondary={
           <ul>
             <li>{`Menü: ${menuDetails.name}`}</li>
