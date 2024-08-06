@@ -2,6 +2,16 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Container, Typography, List, ListItem, ListItemText, CircularProgress, Paper, Box } from '@mui/material';
 
+// Function to get authorization headers
+const getAuthHeaders = () => {
+  const token = localStorage.getItem('token');
+  return {
+    headers: {
+      Authorization: token ? `Bearer ${token}` : '',
+    },
+  };
+};
+
 const OrderPage = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -10,13 +20,13 @@ const OrderPage = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await axios.get('https://localhost:7297/api/Orders');
+        const response = await axios.get('https://localhost:7297/api/Orders', getAuthHeaders());
         const fetchedOrders = response.data.$values;
-        setOrders(fetchedOrders); // Siparişleri state'e ata
+        setOrders(fetchedOrders); // Set orders to state
       } catch (err) {
-        setError(err); // Hata durumunda state'e ata
+        setError(err); // Set error to state
       } finally {
-        setLoading(false); // Yükleme durumunu kapat
+        setLoading(false); // Close loading state
       }
     };
 
@@ -25,21 +35,21 @@ const OrderPage = () => {
 
   const fetchUserDetails = async (userId) => {
     try {
-      const response = await axios.get(`https://localhost:7297/api/User/${userId}`);
-      return response.data; // Kullanıcı bilgilerini döndür
+      const response = await axios.get(`https://localhost:7297/api/User/${userId}`, getAuthHeaders());
+      return response.data; // Return user details
     } catch (err) {
       console.error("Kullanıcı bilgileri alınamadı:", err);
-      return null; // Hata durumunda null döndür
+      return null; // Return null in case of error
     }
   };
 
   const fetchMenuDetails = async (menuId) => {
     try {
-      const response = await axios.get(`https://localhost:7297/api/Menu/${menuId}`);
-      return response.data; // Menü bilgilerini döndür
+      const response = await axios.get(`https://localhost:7297/api/Menu/${menuId}`, getAuthHeaders());
+      return response.data; // Return menu details
     } catch (err) {
       console.error("Menü bilgileri alınamadı:", err);
-      return null; // Hata durumunda null döndür
+      return null; // Return null in case of error
     }
   };
 

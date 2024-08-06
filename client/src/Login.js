@@ -12,11 +12,17 @@ const Login = () => {
     const handleLogin = async () => {
         try {
             const response = await axios.post('https://localhost:7297/api/User/login', { username, password });
-            // Giriş başarılı, kullanıcı bilgilerini saklayın (örneğin localStorage)
-            localStorage.setItem('userId', response.data.userId); // Kullanıcı ID'sini sakla
-            navigate('/home'); // Ana sayfaya yönlendir
+
+            // Store JWT token and user details in localStorage
+            localStorage.setItem('token', response.data.token);
+            localStorage.setItem('userId', response.data.userId);
+            localStorage.setItem('username', response.data.username);
+            localStorage.setItem('email', response.data.email);
+
+            // Redirect to the home page or any other page
+            navigate('/home');
         } catch (err) {
-            setError('Giriş başarısız. Lütfen tekrar deneyin.'); // Hata mesajı göster
+            setError('Giriş başarısız. Lütfen tekrar deneyin.');
         }
     };
 

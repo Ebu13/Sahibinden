@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Backend.Business.Mapping;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Backend.Controllers
 {
@@ -20,6 +21,7 @@ namespace Backend.Controllers
         }
 
         [HttpGet("menu/{menuId}")]
+        [Authorize]
         public async Task<ActionResult<List<CarRequestDto>>> GetCarsByMenuId(int menuId)
         {
             var cars = await _carService.GetCarsByMenuIdAsync(menuId);
@@ -28,6 +30,7 @@ namespace Backend.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<CarRequestDto>>> GetCars()
         {
             var cars = await _carService.GetAllAsync();
@@ -35,6 +38,7 @@ namespace Backend.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<CarRequestDto>> GetCar(int id)
         {
             var car = await _carService.GetByIdAsync(id);
@@ -48,6 +52,7 @@ namespace Backend.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<CarRequestDto>> PostCar([FromBody] CarRequestDto carRequest)
         {
             if (!ModelState.IsValid)
@@ -60,6 +65,7 @@ namespace Backend.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> PutCar(int id, [FromBody] CarRequestDto carRequest)
         {
             if (id != carRequest.CarId)
@@ -83,6 +89,7 @@ namespace Backend.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteCar(int id)
         {
             var deleted = await _carService.DeleteAsync(id);

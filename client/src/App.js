@@ -11,7 +11,7 @@ import {
   AppBar,
   Toolbar,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom"; // useNavigate için
+import { useNavigate } from "react-router-dom";
 
 const App = () => {
   const [menus, setMenus] = useState([]);
@@ -21,12 +21,21 @@ const App = () => {
   const [users, setUsers] = useState({});
   const [initialMenu, setInitialMenu] = useState(null);
 
-  const navigate = useNavigate(); // useNavigate kullanımı
+  const navigate = useNavigate();
+
+  const getAuthHeaders = () => {
+    const token = localStorage.getItem('token');
+    return {
+      headers: {
+        Authorization: token ? `Bearer ${token}` : '',
+      },
+    };
+  };
 
   const fetchUsers = useCallback((userIds) => {
     const uniqueUserIds = [...new Set(userIds)];
     const userPromises = uniqueUserIds.map((userId) =>
-      axios.get(`https://localhost:7297/api/User/${userId}`)
+      axios.get(`https://localhost:7297/api/User/${userId}`, getAuthHeaders())
     );
 
     Promise.all(userPromises)
@@ -54,7 +63,7 @@ const App = () => {
 
       if (url) {
         axios
-          .get(url)
+          .get(url, getAuthHeaders())
           .then((response) => {
             setItems(response.data.$values);
             const userIds = response.data.$values.map((item) => item.userId);
@@ -70,7 +79,7 @@ const App = () => {
 
   const fetchMenus = useCallback((parentId) => {
     axios
-      .get(`https://localhost:7297/api/Menu/parent/${parentId}`)
+      .get(`https://localhost:7297/api/Menu/parent/${parentId}`, getAuthHeaders())
       .then((response) => {
         if (response.data.$values.length === 0) {
           console.log("Boş API yanıtı alındı. Daha fazla veri yok.");
@@ -92,7 +101,7 @@ const App = () => {
     ) {
       if (initialMenu === "Araba") {
         axios
-          .get(`https://localhost:7297/api/Car`)
+          .get(`https://localhost:7297/api/Car`, getAuthHeaders())
           .then((response) => {
             setItems(response.data.$values);
             const userIds = response.data.$values.map((item) => item.userId);
@@ -103,7 +112,7 @@ const App = () => {
           });
       } else if (initialMenu === "Ev") {
         axios
-          .get(`https://localhost:7297/api/Home`)
+          .get(`https://localhost:7297/api/Home`, getAuthHeaders())
           .then((response) => {
             setItems(response.data.$values);
             const userIds = response.data.$values.map((item) => item.userId);
@@ -135,30 +144,28 @@ const App = () => {
   };
 
   const handleOrder = (item) => {
-    const userId = localStorage.getItem('userId'); // Kullanıcı ID'sini al
+    const userId = localStorage.getItem('userId');
     if (!userId) {
-        alert('Lütfen önce giriş yapın!'); // Giriş yapmamışsa uyar
-        return;
+      alert('Lütfen önce giriş yapın!');
+      return;
     }
 
     const productType = initialMenu === "Araba" ? "Car" : "Home";
     const product = {
-        userId: userId,
-        productType: productType,
-        menuId: item.menuId,
+      userId: userId,
+      productType: productType,
+      menuId: item.menuId,
     };
 
-    // Siparişi API'ye gönder
-    axios.post('https://localhost:7297/api/Orders', product)
-        .then(() => {
-            navigate(`/order`);
-        })
-        .catch(error => {
-            console.error('Sipariş oluşturulurken hata oluştu:', error);
-            alert("Hata: Sipariş oluşturulamadı!");
-        });
-};
-
+    axios.post('https://localhost:7297/api/Orders', product, getAuthHeaders())
+      .then(() => {
+        navigate(`/order`);
+      })
+      .catch(error => {
+        console.error('Sipariş oluşturulurken hata oluştu:', error);
+        alert("Hata: Sipariş oluşturulamadı!");
+      });
+  };
 
   return (
     <Container>

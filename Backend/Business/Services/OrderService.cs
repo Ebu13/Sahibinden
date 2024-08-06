@@ -26,14 +26,15 @@ namespace Backend.Business.Services
                 .ToList();
         }
 
-        public OrderRequestDTO GetOrderById(int orderId)
+        public OrderRequestDTO? GetOrderById(int orderId)
         {
             var order = _context.Orders
                 .Include(o => o.User)
                 .Include(o => o.Menu)
                 .FirstOrDefault(o => o.OrderId == orderId);
-            return order?.ToDto();
+            return order?.ToDto(); // Nullable dönüş tipi belirtildi
         }
+
 
         public void AddOrder(OrderRequestDTO orderRequest)
         {

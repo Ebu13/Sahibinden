@@ -2,6 +2,7 @@
 using Backend.Business.Services;
 using Backend.Business.Requests;
 using Backend.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Backend.Controllers
 {
@@ -17,12 +18,14 @@ namespace Backend.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public ActionResult<List<OrderRequestDTO>> GetAllOrders()
         {
             return _orderService.GetAllOrders();
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public ActionResult<OrderRequestDTO> GetOrderById(int id)
         {
             var order = _orderService.GetOrderById(id);
@@ -34,13 +37,24 @@ namespace Backend.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public ActionResult<OrderRequestDTO> AddOrder(OrderRequestDTO orderRequest)
         {
-            _orderService.AddOrder(orderRequest);
-            return CreatedAtAction(nameof(GetOrderById), new { id = orderRequest.OrderId }, orderRequest);
+            try
+            {
+                _orderService.AddOrder(orderRequest);
+                return CreatedAtAction(nameof(GetOrderById), new { id = orderRequest.OrderId }, orderRequest);
+            }
+            catch (Exception ex)
+            {
+                // Hata günlüğü yazma
+                return BadRequest(new { message = "Sipariş oluşturulurken bir hata oluştu.", error = ex.Message });
+            }
         }
 
+
         [HttpPut("{id}")]
+        [Authorize]
         public IActionResult UpdateOrder(int id, OrderRequestDTO orderRequest)
         {
             if (id != orderRequest.OrderId)
@@ -53,6 +67,7 @@ namespace Backend.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize]
         public IActionResult DeleteOrder(int id)
         {
             _orderService.DeleteOrder(id);

@@ -2,6 +2,7 @@
 using Backend.Business.Requests;
 using Backend.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Backend.Controllers
 {
@@ -17,6 +18,7 @@ namespace Backend.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<Menu>>> GetMenus()
         {
             var menus = await _menuService.GetAllAsync();
@@ -24,6 +26,7 @@ namespace Backend.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<Menu>> GetMenu(int id)
         {
             var menu = await _menuService.GetByIdAsync(id);
@@ -37,6 +40,7 @@ namespace Backend.Controllers
         }
 
         [HttpGet("parent/{parentId}")]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<Menu>>> GetMenusByParentId(int parentId)
         {
             var menus = await _menuService.GetByParentIdAsync(parentId);
@@ -44,6 +48,7 @@ namespace Backend.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<Menu>> PostMenu(MenuRequestDto menuRequest)
         {
             var menu = await _menuService.AddAsync(menuRequest);
@@ -51,6 +56,7 @@ namespace Backend.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> PutMenu(int id, MenuRequestDto menuRequest)
         {
             var updatedMenu = await _menuService.UpdateAsync(id, menuRequest);
@@ -64,6 +70,7 @@ namespace Backend.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteMenu(int id)
         {
             var deleted = await _menuService.DeleteAsync(id);

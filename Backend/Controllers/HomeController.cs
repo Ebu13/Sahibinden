@@ -3,6 +3,7 @@ using Backend.Business.Requests;
 using Backend.Models;
 using Microsoft.AspNetCore.Mvc;
 using Backend.Business.Mapping;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Backend.Controllers
 {
@@ -18,6 +19,7 @@ namespace Backend.Controllers
         }
 
         [HttpGet("menu/{menuId}")]
+        [Authorize]
         public async Task<ActionResult<List<HomeRequestDto>>> GetHomesByMenuId(int menuId)
         {
             var homes = await _homeService.GetHomesByMenuIdAsync(menuId);
@@ -26,6 +28,7 @@ namespace Backend.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<HomeRequestDto>>> GetHomes()
         {
             var homes = await _homeService.GetAllAsync();
@@ -33,6 +36,7 @@ namespace Backend.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<HomeRequestDto>> GetHome(int id)
         {
             var home = await _homeService.GetByIdAsync(id);
@@ -46,6 +50,7 @@ namespace Backend.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<HomeRequestDto>> PostHome([FromBody] HomeRequestDto homeRequest)
         {
             if (!ModelState.IsValid)
@@ -58,6 +63,7 @@ namespace Backend.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> PutHome(int id, [FromBody] HomeRequestDto homeRequest)
         {
             if (id != homeRequest.HomeId)
@@ -81,6 +87,7 @@ namespace Backend.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteHome(int id)
         {
             var deleted = await _homeService.DeleteAsync(id);

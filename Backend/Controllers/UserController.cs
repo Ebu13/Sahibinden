@@ -2,6 +2,11 @@
 using Backend.Business.Requests;
 using Backend.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Backend.Controllers
 {
@@ -11,12 +16,16 @@ namespace Backend.Controllers
     {
         private readonly UserService _userService;
 
-        public UserController(UserService userService)
+        private readonly IConfiguration _configuration;
+
+        public UserController(IConfiguration configuration, UserService userService)
         {
+            _configuration = configuration;
             _userService = userService;
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
             var users = await _userService.GetAllAsync();
@@ -24,6 +33,7 @@ namespace Backend.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<ActionResult<User>> GetUser(int id)
         {
             var user = await _userService.GetByIdAsync(id);
@@ -37,6 +47,7 @@ namespace Backend.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<User>> PostUser(UserRequestDto userRequest)
         {
             var user = await _userService.AddAsync(userRequest);
@@ -44,6 +55,7 @@ namespace Backend.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> PutUser(int id, UserRequestDto userRequest)
         {
             var updatedUser = await _userService.UpdateAsync(id, userRequest);
@@ -57,6 +69,7 @@ namespace Backend.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteUser(int id)
         {
             var deleted = await _userService.DeleteAsync(id);
@@ -70,6 +83,7 @@ namespace Backend.Controllers
         }
 
         [HttpGet("username/{username}")]
+        [Authorize]
         public async Task<ActionResult<int>> GetUserIdByUsername(string username)
         {
             var userId = await _userService.GetUserIdByUsernameAsync(username);
@@ -83,17 +97,58 @@ namespace Backend.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<User>> Login([FromBody] LoginRequestDto loginRequest)
+        public async Task<ActionResult> Login([FromBody] LoginRequestDto loginRequest)
         {
-            var user = await _userService.ValidateUserAsync(loginRequest.Username, loginRequest.Password);
+            var user = await _userService.ValidateUserAsync(loginRequest.Username ?? throw new ArgumentNullException(nameof(loginRequest.Username)),
+                                                            loginRequest.Password ?? throw new ArgumentNullException(nameof(loginRequest.Password)));
 
             if (user == null)
             {
-                return Unauthorized(); // 401 Unauthorized
+                return Unauthorized();
             }
 
-            return Ok(user);
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"] ?? throw new ArgumentNullException("Jwt:Key"));
+
+            // Null check for Jwt:ExpiresInMinutes
+            var expiresInMinutesString = _configuration["Jwt:ExpiresInMinutes"];
+            if (string.IsNullOrEmpty(expiresInMinutesString))
+            {
+                throw new ArgumentNullException("Jwt:ExpiresInMinutes", "Configuration value cannot be null or empty.");
+            }
+
+            if (!double.TryParse(expiresInMinutesString, out double expiresInMinutes))
+            {
+                throw new ArgumentException("Jwt:ExpiresInMinutes configuration value is not a valid number.");
+            }
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+            new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+            new Claim(ClaimTypes.Name, user.Username)
+                }),
+                Expires = DateTime.UtcNow.AddMinutes(expiresInMinutes),
+                Issuer = _configuration["Jwt:Issuer"],
+                Audience = _configuration["Jwt:Audience"],
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var tokenString = tokenHandler.WriteToken(token);
+
+            // Return the JWT token along with user details
+            return Ok(new
+            {
+                Token = tokenString,
+                UserId = user.UserId,
+                Username = user.Username,
+                Email = user.Email,
+                Password = user.Password // It's not recommended to return the password in responses
+            });
         }
+
 
 
     }
