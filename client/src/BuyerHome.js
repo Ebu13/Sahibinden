@@ -8,6 +8,7 @@ import {
   Card,
   CardContent,
   CardMedia,
+  CardActions,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
@@ -172,8 +173,8 @@ const BuyerHome = () => {
   };
 
   return (
-    <Container>
-      <Grid container alignItems="center" spacing={2}>
+    <Container style={{ marginTop: "20px" }}>
+      <Grid container alignItems="center" justifyContent="space-between" spacing={2}>
         <Grid item>
           <Typography variant="h4" gutterBottom>
             Menüler
@@ -193,41 +194,42 @@ const BuyerHome = () => {
           </Button>
         </Grid>
       </Grid>
-      <div>
+      <Grid container spacing={1} style={{ marginTop: "10px" }}>
         {selectedMenuNames.map((name, index) => (
-          <Typography key={index} variant="h6">
+          <Typography key={index} variant="h6" style={{ marginRight: "10px" }}>
             {name}
           </Typography>
         ))}
-      </div>
-      <div>
+      </Grid>
+      <Grid container spacing={2} style={{ marginTop: "10px" }}>
         {menus.map((menu) => (
-          <Button
-            key={menu.menuId}
-            variant="contained"
-            color="primary"
-            onClick={() => handleButtonClick(menu)}
-            startIcon={
-              <img
-                src={`amblem/${menu.amblem}`}
-                alt={menu.name}
-                style={{ width: 30, height: 30 }}
-              />
-            }
-          >
-            {menu.name}
-          </Button>
+          <Grid item key={menu.menuId}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => handleButtonClick(menu)}
+              startIcon={
+                <img
+                  src={`amblem/${menu.amblem}`}
+                  alt={menu.name}
+                  style={{ width: 30, height: 30 }}
+                />
+              }
+            >
+              {menu.name}
+            </Button>
+          </Grid>
         ))}
-      </div>
+      </Grid>
       <Grid container spacing={4} style={{ marginTop: "20px" }}>
         {items.map((item, index) => {
           const user = users[item.userId];
           return (
-            <Grid item xs={12} sm={6} md={3} key={index}>
+            <Grid item xs={12} sm={6} md={4} key={index}>
               <Card>
                 <CardMedia
                   component="img"
-                  height="140"
+                  height="200"
                   image={`photos/${initialMenu}/${item.photoPath}.jpg`}
                   alt={initialMenu === "Ev" ? "Ev" : "Araba"}
                 />
@@ -257,15 +259,18 @@ const BuyerHome = () => {
                         <strong>Kullanıcı Bilgisi Bulunamadı</strong>
                       </div>
                     )}
-                    <Button
-                      variant="contained"
-                      color="secondary"
-                      onClick={() => handleOrder(item)}
-                    >
-                      Sipariş Ver
-                    </Button>
                   </Typography>
                 </CardContent>
+                <CardActions>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    fullWidth
+                    onClick={() => handleOrder(item)}
+                  >
+                    Sipariş Ver
+                  </Button>
+                </CardActions>
               </Card>
             </Grid>
           );
