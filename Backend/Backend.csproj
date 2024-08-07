@@ -9,16 +9,12 @@
   <ItemGroup>
     <Compile Remove="Business\Request\**" />
     <Compile Remove="Business\Service\**" />
-    <Compile Remove="Middleware\**" />
     <Content Remove="Business\Request\**" />
     <Content Remove="Business\Service\**" />
-    <Content Remove="Middleware\**" />
     <EmbeddedResource Remove="Business\Request\**" />
     <EmbeddedResource Remove="Business\Service\**" />
-    <EmbeddedResource Remove="Middleware\**" />
     <None Remove="Business\Request\**" />
     <None Remove="Business\Service\**" />
-    <None Remove="Middleware\**" />
   </ItemGroup>
 
   <ItemGroup>
