@@ -3,6 +3,10 @@ using Backend.Business.Requests;
 using Backend.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Backend.Logging;
 
 namespace Backend.Controllers
 {
@@ -11,77 +15,129 @@ namespace Backend.Controllers
     public class MenuController : ControllerBase
     {
         private readonly MenuService _menuService;
+        private readonly ILoggerService _logger;
 
-        public MenuController(MenuService menuService)
+        public MenuController(MenuService menuService, ILoggerService logger)
         {
             _menuService = menuService;
+            _logger = logger;
         }
 
         [HttpGet]
         [Authorize]
         public async Task<ActionResult<IEnumerable<Menu>>> GetMenus()
         {
-            var menus = await _menuService.GetAllAsync();
-            return Ok(menus);
+            _logger.LogInfo("GetMenus endpoint hit.");
+            try
+            {
+                var menus = await _menuService.GetAllAsync();
+                return Ok(menus);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetMenus: {ex.Message}");
+                return StatusCode(500, "Internal server error");
+            }
         }
 
         [HttpGet("{id}")]
         [Authorize]
         public async Task<ActionResult<Menu>> GetMenu(int id)
         {
-            var menu = await _menuService.GetByIdAsync(id);
-
-            if (menu == null)
+            _logger.LogInfo($"GetMenu endpoint hit with id: {id}");
+            try
             {
-                return NotFound();
+                var menu = await _menuService.GetByIdAsync(id);
+                if (menu == null)
+                {
+                    _logger.LogWarn($"Menu with id: {id} not found.");
+                    return NotFound();
+                }
+                return Ok(menu);
             }
-
-            return Ok(menu);
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetMenu: {ex.Message}");
+                return StatusCode(500, "Internal server error");
+            }
         }
 
         [HttpGet("parent/{parentId}")]
         [Authorize]
         public async Task<ActionResult<IEnumerable<Menu>>> GetMenusByParentId(int parentId)
         {
-            var menus = await _menuService.GetByParentIdAsync(parentId);
-            return Ok(menus);
+            _logger.LogInfo($"GetMenusByParentId endpoint hit with parentId: {parentId}");
+            try
+            {
+                var menus = await _menuService.GetByParentIdAsync(parentId);
+                return Ok(menus);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetMenusByParentId: {ex.Message}");
+                return StatusCode(500, "Internal server error");
+            }
         }
 
         [HttpPost]
         [Authorize(Roles = "Admin,Supplier")]
         public async Task<ActionResult<Menu>> PostMenu(MenuRequestDto menuRequest)
         {
-            var menu = await _menuService.AddAsync(menuRequest);
-            return CreatedAtAction(nameof(GetMenu), new { id = menu.MenuId }, menu);
+            _logger.LogInfo("PostMenu endpoint hit.");
+            try
+            {
+                var menu = await _menuService.AddAsync(menuRequest);
+                return CreatedAtAction(nameof(GetMenu), new { id = menu.MenuId }, menu);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in PostMenu: {ex.Message}");
+                return StatusCode(500, "Internal server error");
+            }
         }
 
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin,Supplier")]
         public async Task<IActionResult> PutMenu(int id, MenuRequestDto menuRequest)
         {
-            var updatedMenu = await _menuService.UpdateAsync(id, menuRequest);
-
-            if (updatedMenu == null)
+            _logger.LogInfo($"PutMenu endpoint hit with id: {id}");
+            try
             {
-                return NotFound();
+                var updatedMenu = await _menuService.UpdateAsync(id, menuRequest);
+                if (updatedMenu == null)
+                {
+                    _logger.LogWarn($"Menu with id: {id} not found.");
+                    return NotFound();
+                }
+                return NoContent();
             }
-
-            return NoContent();
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in PutMenu: {ex.Message}");
+                return StatusCode(500, "Internal server error");
+            }
         }
 
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin,Supplier")]
         public async Task<IActionResult> DeleteMenu(int id)
         {
-            var deleted = await _menuService.DeleteAsync(id);
-
-            if (!deleted)
+            _logger.LogInfo($"DeleteMenu endpoint hit with id: {id}");
+            try
             {
-                return NotFound();
+                var deleted = await _menuService.DeleteAsync(id);
+                if (!deleted)
+                {
+                    _logger.LogWarn($"Menu with id: {id} not found.");
+                    return NotFound();
+                }
+                return NoContent();
             }
-
-            return NoContent();
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in DeleteMenu: {ex.Message}");
+                return StatusCode(500, "Internal server error");
+            }
         }
     }
-
 }

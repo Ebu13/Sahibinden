@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using Backend.Data;
 using Backend.Business.Services;
+using Backend.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,6 +50,7 @@ builder.Services.AddScoped<HomeService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<MenuService>();
 builder.Services.AddScoped<OrderService>();
+builder.Services.AddSingleton<ILoggerService, LoggerService>();
 
 // JSON seçeneklerini yapılandır
 builder.Services.AddControllers()
