@@ -3,9 +3,6 @@ using Backend.Business.Requests;
 using Backend.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Backend.Logging;
 
 namespace Backend.Controllers

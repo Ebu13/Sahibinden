@@ -1,12 +1,8 @@
 ﻿using Backend.Business.Services;
 using Backend.Business.Requests;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Backend.Business.Mapping;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Logging;
 using Backend.Logging;
 
 namespace Backend.Controllers
