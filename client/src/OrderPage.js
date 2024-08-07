@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Container, Typography, List, ListItem, ListItemText, CircularProgress, Paper, Box } from '@mui/material';
+import { Container, Typography, ListItem, CircularProgress, Paper, Box, Button, Grid, Card, CardContent } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 // Function to get authorization headers
 const getAuthHeaders = () => {
@@ -17,6 +18,7 @@ const OrderPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [userDetails, setUserDetails] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -59,6 +61,16 @@ const OrderPage = () => {
     }
   };
 
+  const handleOrder = () => {
+    navigate('/buyer');
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    navigate('/');
+  };
+
   if (loading) return (
     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
       <CircularProgress />
@@ -68,20 +80,34 @@ const OrderPage = () => {
 
   return (
     <Container maxWidth="md" sx={{ mt: 4 }}>
-      <Typography variant="h4" gutterBottom>
-        Siparişler
-      </Typography>
-      {userDetails && (
-        <Typography variant="h6">
-          Kullanıcı: {userDetails.username}, Email: {userDetails.email}
-        </Typography>
-      )}
+      <Grid container justifyContent="space-between" alignItems="center" sx={{ mb: 2 }}>
+        <Grid item>
+          <Typography variant="h4" gutterBottom>
+            Siparişler
+          </Typography>
+          {userDetails && (
+            <Typography variant="h6">
+              Kullanıcı: {userDetails.username}, Email: {userDetails.email}
+            </Typography>
+          )}
+        </Grid>
+        <Grid item>
+          <Button variant="contained" color="primary" onClick={handleOrder} sx={{ mr: 2 }}>
+            Sipariş Ver
+          </Button>
+          <Button variant="outlined" color="secondary" onClick={handleLogout}>
+            Çıkış Yap
+          </Button>
+        </Grid>
+      </Grid>
       <Paper elevation={3} sx={{ padding: 3 }}>
-        <List>
+        <Grid container spacing={3}>
           {orders.map(order => (
-            <OrderItem key={order.orderId} order={order} fetchMenuDetails={fetchMenuDetails} />
+            <Grid item xs={12} key={order.orderId}>
+              <OrderItem order={order} fetchMenuDetails={fetchMenuDetails} />
+            </Grid>
           ))}
-        </List>
+        </Grid>
       </Paper>
     </Container>
   );
@@ -108,16 +134,16 @@ const OrderItem = ({ order, fetchMenuDetails }) => {
   const productTypeDisplay = order.productType === 'Car' ? 'Araba' : order.productType === 'Home' ? 'Ev' : order.productType;
 
   return (
-    <ListItem>
-      <ListItemText
-        primary={`Ürün Türü: ${productTypeDisplay}`}
-        secondary={
-          <ul>
-            <li>{`Menü: ${menuDetails.name}`}</li>
-          </ul>
-        }
-      />
-    </ListItem>
+    <Card>
+      <CardContent>
+        <Typography variant="h6">
+          Ürün Türü: {productTypeDisplay}
+        </Typography>
+        <Typography variant="body1">
+          Menü: {menuDetails.name}
+        </Typography>
+      </CardContent>
+    </Card>
   );
 };
 

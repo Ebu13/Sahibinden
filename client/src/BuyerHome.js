@@ -8,8 +8,6 @@ import {
   Card,
   CardContent,
   CardMedia,
-  AppBar,
-  Toolbar,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
@@ -24,10 +22,10 @@ const BuyerHome = () => {
   const navigate = useNavigate();
 
   const getAuthHeaders = () => {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem("token");
     return {
       headers: {
-        Authorization: token ? `Bearer ${token}` : '',
+        Authorization: token ? `Bearer ${token}` : "",
       },
     };
   };
@@ -144,9 +142,9 @@ const BuyerHome = () => {
   };
 
   const handleOrder = (item) => {
-    const userId = localStorage.getItem('userId');
+    const userId = localStorage.getItem("userId");
     if (!userId) {
-      alert('Lütfen önce giriş yapın!');
+      alert("Lütfen önce giriş yapın!");
       return;
     }
 
@@ -157,28 +155,44 @@ const BuyerHome = () => {
       menuId: item.menuId,
     };
 
-    axios.post('https://localhost:7297/api/Orders', product, getAuthHeaders())
+    axios
+      .post("https://localhost:7297/api/Orders", product, getAuthHeaders())
       .then(() => {
         navigate(`/order`);
       })
-      .catch(error => {
-        console.error('Sipariş oluşturulurken hata oluştu:', error);
+      .catch((error) => {
+        console.error("Sipariş oluşturulurken hata oluştu:", error);
         alert("Hata: Sipariş oluşturulamadı!");
       });
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
+
   return (
     <Container>
-      <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6" color="inherit">
-            Menü Uygulaması
+      <Grid container alignItems="center" spacing={2}>
+        <Grid item>
+          <Typography variant="h4" gutterBottom>
+            Menüler
           </Typography>
-        </Toolbar>
-      </AppBar>
-      <Typography variant="h4" gutterBottom>
-        Menüler
-      </Typography>
+        </Grid>
+        <Grid item>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => navigate("/order")}
+            style={{ marginRight: "10px" }}
+          >
+            Siparişlerim
+          </Button>
+          <Button variant="contained" color="secondary" onClick={handleLogout}>
+            Çıkış
+          </Button>
+        </Grid>
+      </Grid>
       <div>
         {selectedMenuNames.map((name, index) => (
           <Typography key={index} variant="h6">
