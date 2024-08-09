@@ -1,5 +1,4 @@
 ﻿using Backend.Data;
-using Backend.Models;
 using Backend.Business.Requests;
 using Microsoft.EntityFrameworkCore;
 using Backend.Business.Mapping;
